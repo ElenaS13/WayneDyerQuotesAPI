@@ -19,7 +19,7 @@ public class QuoteCSVReader {
         List<Quote> quotes = new ArrayList<>();
 
 
-        try (CSVReader reader = new CSVReader(new FileReader("/Users/ee/Documents/Code/SB/src/main/resources/quotes.csv"))) {
+        try (CSVReader reader = new CSVReader(new FileReader(getClass().getResourceAsStream("/quotes.csv").toString()))) {
             reader.skip(1);
             List<String[]> rows = reader.readAll();
 
