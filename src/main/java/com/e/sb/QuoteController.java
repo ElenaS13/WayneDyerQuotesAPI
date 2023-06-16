@@ -13,7 +13,8 @@ public class QuoteController {
 
     @GetMapping
     public ResponseEntity<List<Quote>> getAllQuotes() {
-        QuoteCSVReader csvReader = new QuoteCSVReader("/Users/ee/Documents/Code/SB/src/main/resources/quotes.csv");
+        QuoteCSVReader csvReader = new QuoteCSVReader(getClass().getResourceAsStream("/quotes.csv").toString());
+
         List<Quote> quotes = csvReader.readQuotes();
         return ResponseEntity.ok(quotes);
     }
