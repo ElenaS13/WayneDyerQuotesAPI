@@ -68,5 +68,4 @@ public class QuoteController {
         requestCounts.clear();
     }
 
-
 }
