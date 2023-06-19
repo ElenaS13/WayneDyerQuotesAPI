@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuoteCSVReader {
-    private String filePath;
+    private final String filePath;
 
     public QuoteCSVReader(String filePath) {
         this.filePath = filePath;

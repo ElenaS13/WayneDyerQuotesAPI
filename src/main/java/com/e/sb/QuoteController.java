@@ -1,5 +1,8 @@
 package com.e.sb;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,16 +11,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 @RestController
 @RequestMapping("/api/quotes")
 public class QuoteController {
 
     // Track request counts per client
-    private Map<String, Integer> requestCounts = new ConcurrentHashMap<>();
+    private final Map<String, Integer> requestCounts = new ConcurrentHashMap<>();
 
     @GetMapping
     public ResponseEntity<List<Quote>> getAllQuotes(HttpServletRequest request) {
@@ -62,4 +67,6 @@ public class QuoteController {
     public void resetRequestCounts() {
         requestCounts.clear();
     }
+
+
 }
