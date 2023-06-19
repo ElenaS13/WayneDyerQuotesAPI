@@ -11,7 +11,7 @@ The Wayne Dyer Quotes API is a RESTful web service that provides a collection of
 - **Pagination**: Implement pagination to limit the number of quotes returned per request.
 
 ## API Documentation
-Please refer to the [API documentation](link-to-api-docs) for detailed information on how to use the Wayne Dyer Quotes API. The documentation provides examples and usage instructions for each available endpoint, including request/response formats and parameters.
+Please refer to the https://documenter.getpostman.com/view/2722958/2s93sjTTct for detailed information on how to use the Wayne Dyer Quotes API. The documentation provides examples and usage instructions for each available endpoint, including request/response formats and parameters.
 
 ## Technologies Used
 - **Java**: The core programming language used for building the API.
