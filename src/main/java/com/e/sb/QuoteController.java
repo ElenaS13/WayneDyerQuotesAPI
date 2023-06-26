@@ -1,71 +1,74 @@
 package com.e.sb;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.google.firebase.database.*;
+import org.springframework.web.bind.annotation.*;
 
-
+import javax.annotation.PreDestroy;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/quotes")
 public class QuoteController {
 
-    // Track request counts per client
-    private final Map<String, Integer> requestCounts = new ConcurrentHashMap<>();
+    private final DatabaseReference quotesRef;
+
+    public QuoteController() {
+        this.quotesRef = FirebaseDatabase.getInstance().getReference("quotes");
+    }
+
+    @PostMapping
+    public Quote addQuote(@RequestBody Quote quote) {
+        DatabaseReference newQuoteRef = quotesRef.push();
+        String key = newQuoteRef.getKey();
+        quote.setId(key);
+        newQuoteRef.setValueAsync(quote);
+        return quote;
+    }
+
+    @PostMapping("/batch")
+    public List<Quote> addQuotes(@RequestBody List<Quote> quotes) {
+        List<Quote> addedQuotes = new ArrayList<>();
+
+        for (Quote quote : quotes) {
+            DatabaseReference newQuoteRef = quotesRef.push();
+            String key = newQuoteRef.getKey();
+            quote.setId(key);
+            newQuoteRef.setValueAsync(quote);
+            addedQuotes.add(quote);
+        }
+
+        return addedQuotes;
+    }
+
 
     @GetMapping
-    public ResponseEntity<List<Quote>> getAllQuotes(HttpServletRequest request) {
-        String clientIp = getClientIp(request);
+    public CompletableFuture<List<Quote>> getAllQuotes() {
+        CompletableFuture<List<Quote>> future = new CompletableFuture<>();
 
-        // Check request count for the client
-        int count = requestCounts.getOrDefault(clientIp, 0);
-        if (count >= 10) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-        }
+        System.out.println("Registering ValueEventListener");
+        quotesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Quote> quotes = new ArrayList<>();
+                for (DataSnapshot quoteSnapshot : dataSnapshot.getChildren()) {
+                    Quote quote = quoteSnapshot.getValue(Quote.class);
+                    quotes.add(quote);
+                }
+                System.out.println("Retrieved quotes: " + quotes);
 
-        // Increment the request count
-        requestCounts.put(clientIp, count + 1);
+                future.complete(quotes);
+            }
 
-        // Proceed with processing the request and returning the quotes
-        QuoteCSVReader csvReader = new QuoteCSVReader(getClass().getResourceAsStream("/quotes.csv").toString());
-        List<Quote> quotes = csvReader.readQuotes();
-        return ResponseEntity.ok(quotes);
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                future.completeExceptionally(databaseError.toException());
+            }
+        });
+
+        return future;
     }
-
-    // Helper method to extract client IP from request
-    private String getClientIp(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
-            ipAddress = request.getRemoteAddr();
-        }
-        return ipAddress;
-    }
-
-
-    // Reset request counts at the start of each time window
-    @Scheduled(fixedDelay = 3600000) // Runs every hour
-    public void resetRequestCounts() {
-        requestCounts.clear();
-    }
-
 }

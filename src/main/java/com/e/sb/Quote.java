@@ -1,19 +1,19 @@
 package com.e.sb;
 
 public class Quote {
-    private Long id;
+    private String id;
     private String content;
 
     public Quote() {
     }
 
-    public Quote(Long id, String content) {
+    public Quote(String id, String content) {
         this.id = id;
         this.content = content;
     }
 
 
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
 
@@ -21,8 +21,8 @@ public class Quote {
         return this.content;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setId(String id) {
+        this.id = String.valueOf(id);
     }
 
     public void setContent(String content) {
