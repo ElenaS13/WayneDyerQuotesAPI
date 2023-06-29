@@ -36,5 +36,5 @@ build/
 application.properties
 
 ### Json Files ###
-*.json
+quotes-api-e6c3c-firebase-adminsdk-ifg0s-52c2bc8944.json
 
