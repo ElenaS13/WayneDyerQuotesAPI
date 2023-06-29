@@ -34,3 +34,7 @@ build/
 
 ### Main Code ###
 application.properties
+
+### Json Files ###
+*.json
+

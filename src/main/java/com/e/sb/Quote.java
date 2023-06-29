@@ -1,5 +1,8 @@
 package com.e.sb;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Quote {
     private String id;
     private String content;
