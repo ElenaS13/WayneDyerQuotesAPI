@@ -32,9 +32,8 @@ build/
 ### VS Code ###
 .vscode/
 
-### Main Code ###
-application.properties
+
 
 ### Json Files ###
-src/main/resources/quotes-api-e6c3c-firebase-adminsdk-ifg0s-52c2bc8944.json
+*.json
 
