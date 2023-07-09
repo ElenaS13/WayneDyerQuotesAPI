@@ -15,13 +15,12 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseDatabase firebaseDatabase() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream("<path to Firebase json>");
+        FileInputStream serviceAccount = new FileInputStream("src/main/resources/quotes-api-e6c3c-firebase-adminsdk-ifg0s-52c2bc8944.json");
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl("<Firebase URL>")
+                .setDatabaseUrl("https://quotes-api-e6c3c-default-rtdb.firebaseio.com")
                 .build();
-
         FirebaseApp.initializeApp(options);
         return FirebaseDatabase.getInstance();
     }
