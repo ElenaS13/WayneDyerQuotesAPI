@@ -4,7 +4,6 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.database.FirebaseDatabase;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,23 +12,33 @@ import java.io.IOException;
 
 @Configuration
 public class FirebaseConfig {
-    // ...
+
+    private static FirebaseDatabase firebaseDatabase;
 
     @Bean
-    public FirebaseDatabase firebaseDatabase() throws IOException {
-        Dotenv dotenv = Dotenv.load();
-        String configPath = dotenv.get("FIREBASE_CONFIG_PATH");
-        String databaseUrl = dotenv.get("FIREBASE_DATABASE_URL");
-        FileInputStream serviceAccount = new FileInputStream(configPath);
+    public synchronized FirebaseDatabase firebaseDatabase() throws IOException {
+        if (firebaseDatabase == null) {
+            String configPath = System.getenv("FIREBASE_CONFIG_PATH");
+            String databaseUrl = System.getenv("FIREBASE_DATABASE_URL");
+            System.out.println("FIREBASE_CONFIG_PATH: " + configPath);
+            System.out.println("FIREBASE_DATABASE_URL: " + databaseUrl);
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                .setDatabaseUrl(databaseUrl)
-                .build();
+            // Check if running on Heroku and adjust file path accordingly
+            if (System.getenv("DYNO") != null && configPath != null) {
+                configPath = "target/classes/" + configPath;
+            }
 
-        FirebaseApp.initializeApp(options);
-        return FirebaseDatabase.getInstance();
+            FileInputStream serviceAccount = new FileInputStream(configPath);
+
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setDatabaseUrl(databaseUrl)
+                    .build();
+
+            FirebaseApp app = FirebaseApp.initializeApp(options);
+            firebaseDatabase = FirebaseDatabase.getInstance(app);
+        }
+
+        return firebaseDatabase;
     }
-
-
 }
