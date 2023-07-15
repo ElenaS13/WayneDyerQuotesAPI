@@ -13,6 +13,8 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
+    // added Firebase config to Heroku
+
     private static boolean firebaseAppInitialized = false;
 
     @Bean
