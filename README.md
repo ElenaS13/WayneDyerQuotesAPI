@@ -32,7 +32,7 @@ To set up the Wayne Dyer Quotes API locally, follow these steps:
 
 4. Run the API:
 
-The API will be accessible at [http://localhost:8080/api/quotes](http://localhost:8080/api/quotes).
+The API will be accessible at https://wayne-dyer-quotes-api-4c40c19e5047.herokuapp.com/api/quotes
 
 For deployment on a hosting platform, such as Heroku, follow the platform-specific instructions to deploy the application.
 
