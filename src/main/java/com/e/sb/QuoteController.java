@@ -52,4 +52,12 @@ public class QuoteController {
 
         return quote;
     }
+
+    @PatchMapping("/{id}")
+    public Quote updateQuote(@PathVariable String id, @RequestBody Quote updatedQuote) {
+        DatabaseReference quoteRef = quotesRef.child(id);
+        quoteRef.setValueAsync(updatedQuote);
+
+        return updatedQuote;
+    }
 }
