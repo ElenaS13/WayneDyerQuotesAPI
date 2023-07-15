@@ -13,11 +13,11 @@ import java.io.IOException;
 @Configuration
 public class FirebaseConfig {
 
-    private static FirebaseDatabase firebaseDatabase;
+    private static boolean firebaseAppInitialized = false;
 
     @Bean
-    public synchronized FirebaseDatabase firebaseDatabase() throws IOException {
-        if (firebaseDatabase == null) {
+    public FirebaseDatabase firebaseDatabase() throws IOException {
+        if (!firebaseAppInitialized) {
             String configPath = System.getenv("FIREBASE_CONFIG_PATH");
             String databaseUrl = System.getenv("FIREBASE_DATABASE_URL");
             System.out.println("FIREBASE_CONFIG_PATH: " + configPath);
@@ -35,10 +35,10 @@ public class FirebaseConfig {
                     .setDatabaseUrl(databaseUrl)
                     .build();
 
-            FirebaseApp app = FirebaseApp.initializeApp(options);
-            firebaseDatabase = FirebaseDatabase.getInstance(app);
+            FirebaseApp.initializeApp(options);
+            firebaseAppInitialized = true;
         }
 
-        return firebaseDatabase;
+        return FirebaseDatabase.getInstance();
     }
 }
