@@ -7,31 +7,32 @@ import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FirebaseConfig {
-    
+
     private static boolean firebaseAppInitialized = false;
 
     @Bean
     public FirebaseDatabase firebaseDatabase() throws IOException {
         if (!firebaseAppInitialized) {
-            String configPath = System.getenv("FIREBASE_CONFIG_PATH");
+            String jsonCredentials = System.getenv("FIREBASE_JSON");
             String databaseUrl = System.getenv("FIREBASE_DATABASE_URL");
-            System.out.println("FIREBASE_CONFIG_PATH: " + configPath);
-            System.out.println("FIREBASE_DATABASE_URL: " + databaseUrl);
 
-            // Check if running on Heroku and adjust file path accordingly
-            if (System.getenv("DYNO") != null && configPath != null) {
-                configPath = "target/classes/" + configPath;
+            if (jsonCredentials == null || jsonCredentials.isEmpty()) {
+                throw new IllegalArgumentException("Firebase JSON credentials not found. Please set the FIREBASE_JSON environment variable.");
+            }
+            if (databaseUrl == null || databaseUrl.isEmpty()) {
+                throw new IllegalArgumentException("Firebase Database URL not found. Please set the FIREBASE_DATABASE_URL environment variable.");
             }
 
-            FileInputStream serviceAccount = new FileInputStream(configPath);
+            ByteArrayInputStream credentialsStream = new ByteArrayInputStream(jsonCredentials.getBytes(StandardCharsets.UTF_8));
 
             FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                    .setCredentials(GoogleCredentials.fromStream(credentialsStream))
                     .setDatabaseUrl(databaseUrl)
                     .build();
 
