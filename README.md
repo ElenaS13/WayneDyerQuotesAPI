@@ -36,8 +36,3 @@ The API will be accessible at https://wayne-dyer-quotes-api-4c40c19e5047.herokua
 
 For deployment on a hosting platform, such as Heroku, follow the platform-specific instructions to deploy the application.
 
-## Contributions
-Contributions to the Wayne Dyer Quotes API are welcome! If you find any issues, have suggestions for improvements, or would like to add new features, please submit a pull request.
-
-## License
-The Wayne Dyer Quotes API is released under the [MIT License](link-to-license-file). Feel free to use, modify, and distribute the API according to the terms of the license.
