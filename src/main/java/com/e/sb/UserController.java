@@ -1,28 +1,33 @@
 package com.e.sb;
 
-import org.springframework.http.ResponseEntity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.web.bind.annotation.*;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final UserService userService;
+    private final DatabaseReference usersRef;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(FirebaseDatabase firebaseDatabase) {
+        this.usersRef = firebaseDatabase.getReference("users");
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUpUser(@RequestBody SignUpRequest signUpRequest) {
+    public CompletableFuture<String> signUpUser(@RequestBody User user) {
+        DatabaseReference newUserRef = usersRef.push();
+        String key = newUserRef.getKey();
 
-        // Create a new User object from the sign-up request
-        User newUser = new User(signUpRequest.getUsername(), signUpRequest.getEmail(), signUpRequest.getPassword());
+        // Convert the key to Long and set it as the user's ID
+        user.setId(key);  // Firebase keys are alphanumeric, so you can set them directly as strings
 
-        // Save the user using the UserService
-        userService.saveUser(newUser);
+        newUserRef.setValueAsync(user);
 
-        // Return a success response
-        return ResponseEntity.ok("User signed up successfully");
+        return CompletableFuture.completedFuture("User signed up successfully");
     }
+
+
+    // You can add more methods here for retrieving and updating user data
 }
