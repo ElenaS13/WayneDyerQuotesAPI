@@ -8,7 +8,9 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(columnDefinition = "BIGINT")
+
+    private String id;
 
     private String username;
     private String email;
@@ -30,7 +32,7 @@ public class User {
     }
 
     // Getters and setters
-    public Long getId() {
+    public String getId() {
         return this.id;
     }
 
@@ -46,7 +48,7 @@ public class User {
         return this.password;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
