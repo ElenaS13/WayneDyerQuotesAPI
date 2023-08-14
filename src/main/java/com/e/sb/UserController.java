@@ -2,7 +2,10 @@ package com.e.sb;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.concurrent.CompletableFuture;
+
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -15,6 +18,7 @@ public class UserController {
         this.usersRef = firebaseDatabase.getReference("users");
     }
 
+
     @PostMapping("/signup")
     public CompletableFuture<String> signUpUser(@RequestBody User user) {
         DatabaseReference newUserRef = usersRef.push();
@@ -26,8 +30,6 @@ public class UserController {
         newUserRef.setValueAsync(user);
 
         return CompletableFuture.completedFuture("User signed up successfully");
+
     }
-
-
-    // You can add more methods here for retrieving and updating user data
 }

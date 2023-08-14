@@ -32,7 +32,8 @@ public class User {
 
     // Getters and setters
     public String getId() {
-        return id;
+        return this.id;
+
     }
 
     public String getUsername() {
