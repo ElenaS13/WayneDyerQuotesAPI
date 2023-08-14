@@ -9,7 +9,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(columnDefinition = "BIGINT")
-
     private String id;
 
     private String username;
@@ -34,6 +33,7 @@ public class User {
     // Getters and setters
     public String getId() {
         return this.id;
+
     }
 
     public String getUsername() {

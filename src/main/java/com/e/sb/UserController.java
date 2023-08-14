@@ -4,6 +4,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.concurrent.CompletableFuture;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -31,5 +32,4 @@ public class UserController {
         return CompletableFuture.completedFuture("User signed up successfully");
 
     }
-
 }
