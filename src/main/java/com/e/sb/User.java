@@ -13,7 +13,9 @@ public class User {
 
     private String username;
     private String email;
-    private String password; // Remember to store hashed passwords for security
+    private String password;
+
+    private String apiKey;
 
     public User() {
     }
@@ -64,6 +66,14 @@ public class User {
         this.password = password;
     }
 
+
+    public String getApiKey() {
+        return this.apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
 
 

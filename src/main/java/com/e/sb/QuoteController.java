@@ -19,29 +19,47 @@ public class QuoteController {
 
 
     @GetMapping
-    public CompletableFuture<List<Quote>> getAllQuotes() {
+    public CompletableFuture<List<Quote>> getAllQuotes(@RequestHeader("x-api-key") String apiKey) {
         CompletableFuture<List<Quote>> future = new CompletableFuture<>();
 
-        quotesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                List<Quote> quotes = new ArrayList<>();
-                for (DataSnapshot quoteSnapshot : dataSnapshot.getChildren()) {
-                    Quote quote = quoteSnapshot.getValue(Quote.class);
-                    quotes.add(quote);
-                }
 
-                future.complete(quotes);
-            }
+        validateApiKey(apiKey).thenAccept(isValid -> {
+            if (isValid) {
+                quotesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<Quote> quotes = new ArrayList<>();
+                        for (DataSnapshot quoteSnapshot : dataSnapshot.getChildren()) {
+                            Quote quote = quoteSnapshot.getValue(Quote.class);
+                            quotes.add(quote);
+                        }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                future.completeExceptionally(databaseError.toException());
+                        future.complete(quotes);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        future.completeExceptionally(databaseError.toException());
+                    }
+                });
+            } else {
+                future.completeExceptionally(new RuntimeException("Invalid API key"));
             }
         });
 
         return future;
     }
+
+    private CompletableFuture<Boolean> validateApiKey(String apiKey) {
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+
+        // Query Firebase to validate the apiKey
+        // If the apiKey is valid, complete the future with true
+        // If the apiKey is invalid, complete the future with false
+
+        return future;
+    }
+
 
     @PostMapping()
     public Quote addQuote(@RequestBody Quote quote) {
