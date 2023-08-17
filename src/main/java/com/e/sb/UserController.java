@@ -22,7 +22,6 @@ public class UserController {
     @PostMapping("/signup")
     public CompletableFuture<String> signUpUser(@RequestBody User user) {
         DatabaseReference newUserRef = usersRef.push();
-        String key = newUserRef.getKey();
 
         String apiKey = generateRandomApiKey();
 
