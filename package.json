@@ -1,0 +1,19 @@
+{
+  "name": "sb",
+  "version": "1.0.0",
+  "description": "## Introduction The Wayne Dyer Quotes API is a RESTful web service that provides a collection of inspirational quotes by Wayne Dyer. This API allows users to retrieve quotes programmatically, making it suitable for integration into various applications, websites, or personal projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^10.3.1"
+  },
+  "devDependencies": {
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4"
+  }
+}

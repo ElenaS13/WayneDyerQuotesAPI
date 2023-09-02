@@ -1,10 +1,10 @@
 package com.e.sb;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.e.sb.User;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserRecord;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.concurrent.CompletableFuture;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -12,40 +12,26 @@ import java.util.concurrent.CompletableFuture;
 @RequestMapping("/api/users")
 public class UserController {
 
-    private final DatabaseReference usersRef;
-
-    public UserController(FirebaseDatabase firebaseDatabase) {
-        this.usersRef = firebaseDatabase.getReference("users");
-    }
-
-
     @PostMapping("/signup")
     public CompletableFuture<String> signUpUser(@RequestBody User user) {
-        DatabaseReference newUserRef = usersRef.push();
+        try {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                    .setEmail(user.getEmail())
+                    .setPassword(user.getPassword());
 
-        String apiKey = generateRandomApiKey();
+            UserRecord userRecord = FirebaseAuth.getInstance().createUser(request);
 
-        //System.out.println("Generated API Key: " + apiKey); // Debug print statement
+            // Update user profile with display name
+            UserRecord.UpdateRequest updateRequest = new UserRecord.UpdateRequest(userRecord.getUid())
+                    .setDisplayName(user.getDisplayName()); // Set additional user properties as needed
 
+            FirebaseAuth.getInstance().updateUser(updateRequest);
 
-        user.setApiKey(apiKey);
-
-        newUserRef.setValueAsync(user);
-
-        return CompletableFuture.completedFuture("User signed up successfully");
-
-    }
-
-    private String generateRandomApiKey() {
-        int length = 32;
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder apiKey = new StringBuilder();
-
-        for (int i = 0; i < length; i++) {
-            int index = (int) (Math.random() * characters.length());
-            apiKey.append(characters.charAt(index));
+            return CompletableFuture.completedFuture("User signed up successfully");
+        } catch (Exception e) {
+            // Handle errors, such as duplicate email addresses
+            return CompletableFuture.completedFuture("User sign-up failed: " + e.getMessage());
         }
-
-        return apiKey.toString();
     }
 }

@@ -16,6 +16,7 @@ public class User {
     private String password;
 
     private String apiKey;
+    private String displayName;
 
     public User() {
     }
@@ -73,6 +74,14 @@ public class User {
 
     public void setApiKey(String apiKey) {
         this.apiKey = apiKey;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
     }
 
 
