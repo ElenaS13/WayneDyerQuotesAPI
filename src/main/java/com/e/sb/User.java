@@ -1,5 +1,7 @@
 package com.e.sb;
 
+import com.google.cloud.firestore.annotation.PropertyName;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -14,7 +16,7 @@ public class User {
     private String username;
     private String email;
     private String password;
-
+    @PropertyName("apiKey")
     private String apiKey;
     private String displayName;
 
@@ -25,6 +27,13 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password; // Remember to hash passwords
+    }
+
+    public User(String username, String email, String password, String apiKey) {
+        this.username = username;
+        this.email = email;
+        this.password = password; // Remember to hash passwords
+        this.apiKey = apiKey;
     }
 
 
@@ -83,6 +92,8 @@ public class User {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+
+
 
 
 

@@ -53,10 +53,6 @@ public class QuoteController {
     private CompletableFuture<Boolean> validateApiKey(String apiKey) {
         CompletableFuture<Boolean> future = new CompletableFuture<>();
 
-        // Query Firebase to validate the apiKey
-        // If the apiKey is valid, complete the future with true
-        // If the apiKey is invalid, complete the future with false
-
         return future;
     }
 

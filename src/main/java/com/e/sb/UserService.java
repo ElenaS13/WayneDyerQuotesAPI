@@ -11,16 +11,18 @@ public class UserService {
     private DatabaseReference usersRef;
 
     public UserService() {
-        usersRef = FirebaseDatabase.getInstance().getReference("users"); // "users" is the name of the node where you want to store users
+        usersRef = FirebaseDatabase.getInstance().getReference("users");
     }
 
     public void saveUser(User user) {
         try {
             usersRef.child(user.getId().toString()).setValueAsync(user);
         } catch (DatabaseException e) {
-
+            // Handle the database write error, log it, or take appropriate action
+            e.printStackTrace();
         }
     }
+
     public CompletableFuture<User> getUserByUsername(String username) {
         CompletableFuture<User> futureUser = new CompletableFuture<>();
 
@@ -31,7 +33,7 @@ public class UserService {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     User user = userSnapshot.getValue(User.class);
                     futureUser.complete(user);
-                    return;  // Assuming username is unique, so we can return after finding the first match
+                    return;
                 }
                 // If no matching user is found, complete with null
                 futureUser.complete(null);
@@ -43,9 +45,37 @@ public class UserService {
             }
         });
 
-        // Return the CompletableFuture immediately
         return futureUser;
     }
 
+    public CompletableFuture<String> getApiKey(String userId) {
+        CompletableFuture<String> apiKeyFuture = new CompletableFuture<>();
 
+        DatabaseReference userRef = usersRef.child(userId);
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                User user = dataSnapshot.getValue(User.class);
+                if (user != null) {
+                    String apiKey = user.getApiKey();
+                    apiKeyFuture.complete(apiKey);
+                } else {
+                    apiKeyFuture.complete(null); // User not found
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                apiKeyFuture.completeExceptionally(databaseError.toException());
+            }
+        });
+
+        return apiKeyFuture;
+    }
+
+
+    public boolean isValidCredentials(String email, String password) {
+
+        return true;
+    }
 }
