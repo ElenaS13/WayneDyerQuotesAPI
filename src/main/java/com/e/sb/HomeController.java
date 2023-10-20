@@ -25,6 +25,11 @@ public class HomeController {
         return "index"; // Return the name of the HTML template without the extension
     }
 
+    @GetMapping("/dashboard.html")
+    public String dashboard() {
+        return "dashboard";
+    }
+
 
 }
 
